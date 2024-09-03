@@ -20,15 +20,12 @@ export default function Component() {
       setLoading(false);
     }, 1000);
   }, []);
-  useEffect(() => {
-    setTimeout(() => {
-      setAnimate(true);
-      setLoading(false);
-    }, 1400);
-  }, []);
 
   const [isVisible, setIsVisible] = useState(false);
+  const [headingVisible, setHeadingVisible] = useState(false);
+
   const productRef = useRef(null);
+  const headingRef = useRef(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -52,9 +49,30 @@ export default function Component() {
     };
   }, []);
 
+  useEffect(() => {
+    const headingObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setHeadingVisible(true);
+          headingObserver.unobserve(entry.target);
+        }
+      },
+      { threshold: 0.1 },
+    );
+
+    if (headingRef.current) {
+      headingObserver.observe(headingRef.current);
+    }
+
+    return () => {
+      if (headingRef.current) {
+        headingObserver.unobserve(headingRef.current);
+      }
+    };
+  }, []);
+
   return (
     <div className="min-h-screen w-full bg-stone-50">
-      {/* Hero Section */}
       <section className="min-h-screen flex flex-col justify-center items-center text-center px-4 sm:px-6 lg:px-8">
         <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold text-gray-900 mb-6">
           {loading ? (
@@ -106,7 +124,6 @@ export default function Component() {
         </div>
       </section>
 
-      {/* Product Showcase Section */}
       <section
         ref={productRef}
         className={`min-h-screen flex flex-col justify-center items-center px-4 sm:px-6 lg:px-8 transition-opacity duration-1000 ${
@@ -117,18 +134,22 @@ export default function Component() {
           <div className="md:w-1/2 mb-8 md:mb-0">
             <img
               src="/placeholder.svg?height=400&width=400"
-              alt="Product"
+              alt="card"
               className="w-full h-auto rounded-lg shadow-xl"
             />
           </div>
           <div className="md:w-1/2 md:pl-12">
-            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
-              Revolutionary Product
+            <h2
+              ref={headingRef}
+              className={`text-4xl sm:text-5xl font-bold text-gray-900 mb-6 transition-opacity duration-1000 ${
+                headingVisible ? "opacity-100 animate-fade-in" : "opacity-100"
+              }`}
+            >
+              Stainless Steel
             </h2>
             <p className="text-xl text-gray-600 mb-8">
-              Experience the future with our innovative product. Designed to
-              transform your daily life, it combines cutting-edge technology
-              with sleek, minimalist design.
+              Reimagine the credit card experience and transform your boring
+              plastic card into a sleek, metal card.
             </p>
             <Button
               size="lg"
@@ -142,6 +163,7 @@ export default function Component() {
     </div>
   );
 }
+
 function SkeletonTitle({ className }) {
   return (
     <div
@@ -149,6 +171,7 @@ function SkeletonTitle({ className }) {
     ></div>
   );
 }
+
 function SkeletonSubtitle({ className }) {
   return (
     <div
@@ -156,6 +179,7 @@ function SkeletonSubtitle({ className }) {
     ></div>
   );
 }
+
 function SkeletonButton({ className }) {
   return (
     <div

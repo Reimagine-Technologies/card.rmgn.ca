@@ -94,6 +94,23 @@ export default function Component() {
             </p>
           )}
         </p>
+
+        <div className="mb-8">
+          {loading ? (
+            <div />
+          ) : (
+            <div
+              className={`rotate-xy-animation ${animate ? "animate-in" : ""}`}
+            >
+              <img
+                src="/images/card.png"
+                alt="card"
+                className="w-64 h-40 object-cover rounded-lg shadow-lg"
+              />
+            </div>
+          )}
+        </div>
+
         <div>
           {loading ? (
             <SkeletonButton className="text-3xl" />

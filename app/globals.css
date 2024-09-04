@@ -118,3 +118,26 @@
 .animate-fade-down {
     animation: fadeDown 1500ms ease-out;
 }
+
+@keyframes rotate-xy {
+    0% {
+        transform: rotateY(23deg) rotateX(19deg) rotateZ(-9deg);
+        opacity: 0;
+    }
+    100% {
+        transform: rotateY(0deg) rotateX(0deg) rotateZ(0deg);
+        opacity: 1;
+    }
+}
+
+.rotate-xy-animation {
+    transition:
+        transform 3s cubic-bezier(0.68, -0.6, 0.32, 1.6),
+        opacity 4s ease-out;
+    perspective: 1000px;
+    transform-style: preserve-3d;
+}
+
+.animate-in {
+    animation: rotate-xy 4s forwards;
+}

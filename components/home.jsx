@@ -26,6 +26,7 @@ export default function Component() {
 
   const productRef = useRef(null);
   const headingRef = useRef(null);
+  const cardImgRef = useRef(null); // Ref for the image
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -71,6 +72,25 @@ export default function Component() {
     };
   }, []);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (cardImgRef.current) {
+        const scrollY = window.scrollY;
+        const scale = Math.max(1, 1 + scrollY / 25); // Adjust scale factor
+        const opacity = Math.max(0, 1 - scrollY / 100); // Adjust opacity factor
+
+        cardImgRef.current.style.transform = `scale(${scale})`;
+        cardImgRef.current.style.opacity = opacity;
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
     <div className="min-h-screen w-full bg-stone-50">
       <section className="min-h-screen flex flex-col justify-center items-center text-center px-4 sm:px-6 lg:px-8">
@@ -97,15 +117,16 @@ export default function Component() {
 
         <div className="mb-8">
           {loading ? (
-            <div />
+            <div className="mb-16" />
           ) : (
             <div
               className={`rotate-xy-animation ${animate ? "animate-in" : ""}`}
             >
               <img
+                ref={cardImgRef} // Attach ref here
                 src="/images/card.png"
                 alt="card"
-                className="w-64 h-40 object-cover rounded-lg shadow-lg"
+                className="w-64 h-40 object-cover rounded-lg shadow-lg transition-transform transition-opacity"
               />
             </div>
           )}
